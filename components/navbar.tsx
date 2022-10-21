@@ -1,9 +1,13 @@
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import images from '../assets';
+import { MenuItemsNFT } from './menu-items';
+import { MenuItems } from './menu-items/menu-items';
 
 export const Navbar = () => {
+  const [active, setActive] = useState<MenuItemsNFT>(MenuItemsNFT.ExploreNFTs);
   const { theme, setTheme } = useTheme();
   console.log({ theme });
 
@@ -44,6 +48,7 @@ export const Navbar = () => {
         </Link>
       </div>
 
+      {/* Toggle dark/light */}
       <div className="flex flex-initial flex-row justify-end">
         <div className="flex items-center mr-2">
           <input
@@ -62,6 +67,12 @@ export const Navbar = () => {
             <div className="w-3 h-3 absolute bg-white rounded-full ball" />
           </label>
         </div>
+      </div>
+
+      {/* Menu items */}
+      {/* Larger devices coding */}
+      <div className="md:hidden flex">
+        <MenuItems active={active} isMobile={false} />
       </div>
     </nav>
   );
