@@ -3,17 +3,20 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import images from '../assets';
-import { MenuItemsNFT } from './menu-items';
-import { MenuItems } from './menu-items/menu-items';
+import { MenuItems, MenuItemsNFT } from './menu-items';
 
 export const Navbar = () => {
   const [active, setActive] = useState<MenuItemsNFT>(MenuItemsNFT.ExploreNFTs);
   const { theme, setTheme } = useTheme();
-  console.log({ theme });
 
   const changeThemeHandler = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
+
+  const activeTabChangeHandler = (item: MenuItemsNFT) => {
+    setActive(item);
+  };
+  console.log(active);
 
   return (
     <nav className="flexBetween w-full fixed z-10 p-4 flex-row border-b dark:bg-nft-dark bg-white dark:border-nft-black-1 border-nft-gray-1">
@@ -72,7 +75,11 @@ export const Navbar = () => {
       {/* Menu items */}
       {/* Larger devices coding */}
       <div className="md:hidden flex">
-        <MenuItems active={active} isMobile={false} />
+        <MenuItems
+          active={active}
+          activeTabChangeHandler={activeTabChangeHandler}
+          isMobile={false}
+        />
       </div>
     </nav>
   );
