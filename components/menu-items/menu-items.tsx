@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { MenuItemsNFT } from './menu-items.types';
 
 type MenuItemsProps = {
-  active: MenuItemsNFT;
+  active?: MenuItemsNFT;
   isMobile: boolean;
   activeTabChangeHandler: (item: MenuItemsNFT) => void;
 };

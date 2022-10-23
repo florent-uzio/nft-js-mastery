@@ -1,22 +1,30 @@
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import images from '../assets';
+import { ButtonGroup } from './button-group';
 import { MenuItems, MenuItemsNFT } from './menu-items';
 
 export const Navbar = () => {
-  const [active, setActive] = useState<MenuItemsNFT>(MenuItemsNFT.ExploreNFTs);
+  const [active, setActive] = useState<MenuItemsNFT | undefined>(
+    MenuItemsNFT.ExploreNFTs
+  );
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
 
   const changeThemeHandler = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
-  const activeTabChangeHandler = (item: MenuItemsNFT) => {
-    setActive(item);
+  const activeTabChangeHandler = (item?: MenuItemsNFT) => {
+    if (item) {
+      setActive(item);
+    }
+    setActive(undefined);
   };
-  console.log(active);
 
   return (
     <nav className="flexBetween w-full fixed z-10 p-4 flex-row border-b dark:bg-nft-dark bg-white dark:border-nft-black-1 border-nft-gray-1">
@@ -70,16 +78,60 @@ export const Navbar = () => {
             <div className="w-3 h-3 absolute bg-white rounded-full ball" />
           </label>
         </div>
+
+        {/* Menu items */}
+        {/* Larger devices coding */}
+        <div className="md:hidden flex">
+          <MenuItems
+            active={active}
+            activeTabChangeHandler={activeTabChangeHandler}
+            isMobile={false}
+          />
+          <ButtonGroup
+            activeTabChangeHandler={activeTabChangeHandler}
+            hasConnected={true}
+          />
+        </div>
       </div>
 
-      {/* Menu items */}
-      {/* Larger devices coding */}
-      <div className="md:hidden flex">
-        <MenuItems
-          active={active}
-          activeTabChangeHandler={activeTabChangeHandler}
-          isMobile={false}
-        />
+      {/* Mobile navigation bar */}
+      <div className="hidden md:flex ml-2">
+        {isOpen ? (
+          <Image
+            alt="close"
+            className={theme === 'light' ? 'filter invert' : ''}
+            height={20}
+            objectFit="contain"
+            onClick={() => setIsOpen(false)}
+            src={images.cross}
+            width={20}
+          />
+        ) : (
+          <Image
+            alt="menu"
+            className={theme === 'light' ? 'filter invert' : ''}
+            height={25}
+            objectFit="contain"
+            onClick={() => setIsOpen(true)}
+            src={images.menu}
+            width={25}
+          />
+        )}
+
+        {isOpen && (
+          <div className="fixed inset-0 top-65 dark:bg-nft-dark bg-white z-10 nav-h flex justify-between flex-col">
+            <div className="flex-1 p-4">
+              <MenuItems
+                active={active}
+                activeTabChangeHandler={activeTabChangeHandler}
+                isMobile
+              />
+            </div>
+            <div className="p-4 border-t dark:border-nft-black-1 border-nft-gray-1">
+              <ButtonGroup activeTabChangeHandler={activeTabChangeHandler} />
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
