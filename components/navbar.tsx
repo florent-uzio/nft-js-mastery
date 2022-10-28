@@ -22,8 +22,9 @@ export const Navbar = () => {
   const activeTabChangeHandler = (item?: MenuItemsNFT) => {
     if (item) {
       setActive(item);
+    } else {
+      setActive(undefined);
     }
-    setActive(undefined);
   };
 
   return (
