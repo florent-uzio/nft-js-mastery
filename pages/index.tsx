@@ -3,7 +3,7 @@ import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import images from '../assets';
-import { Banner, CreatorCard } from '../components';
+import { Banner, CreatorCard, NFTCard } from '../components';
 import { makeId } from '../utils';
 
 type Direction = 'left' | 'right';
@@ -113,6 +113,32 @@ const Home: NextPage = () => {
                 </>
               )}
             </div>
+          </div>
+        </div>
+        <div className="mt-10">
+          <div className="flex-1 flexBetween mx-4 xs:mx-0 minlg:mx-8 sm:flex-col sm:items-start">
+            <h1 className="font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold sm:mb-4">
+              Hot Bids
+            </h1>
+            <div>SearchBar</div>
+          </div>
+          <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((nft, index) => {
+              return (
+                <NFTCard
+                  key={`nft-${index}`}
+                  nft={{
+                    description: 'Cool NFT on sale',
+                    image: '',
+                    name: `Nifty NFT ${index}`,
+                    nft,
+                    owner: `0x${makeId(3)}...${makeId(4)}`,
+                    price: (10 - nft * 0.534).toFixed(2),
+                    seller: `0x${makeId(3)}...${makeId(4)}`,
+                  }}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
