@@ -3,10 +3,22 @@ import Image from 'next/image';
 import { useCallback, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import images from '../assets';
+import { Button, Input } from '../components/shared';
+
+type FormInput = {
+  price: string;
+  name: string;
+  description: string;
+};
 
 const CreateNFT = () => {
   const { theme } = useTheme();
   const [fileUrl, setFileUrl] = useState(null);
+  const [formInput, setFormInput] = useState<FormInput>({
+    price: '',
+    name: '',
+    description: '',
+  });
   const onDrop = useCallback(() => {}, []);
   const {
     getRootProps,
@@ -26,6 +38,8 @@ const CreateNFT = () => {
     ${isDragAccept ? ' border-file-accept' : ''}
     ${isDragReject ? ' border-file-reject' : ''}`;
   }, [isDragAccept, isDragActive, isDragReject]);
+
+  console.log({ formInput });
 
   return (
     <div className="flex justify-center sm:px-4 p-12">
@@ -72,6 +86,55 @@ const CreateNFT = () => {
               </aside>
             )}
           </div>
+        </div>
+
+        <Input
+          inputType="input"
+          title="Name"
+          placeholder="NFT name"
+          onChange={(event) => {
+            setFormInput((current) => {
+              return {
+                ...current,
+                // @ts-ignore
+                name: event.target.value,
+              };
+            });
+          }}
+        />
+        <Input
+          inputType="textarea"
+          title="Description"
+          placeholder="NFT description"
+          onChange={(event) => {
+            setFormInput((current) => {
+              return {
+                ...current,
+                // @ts-ignore
+                description: event.target.value,
+              };
+            });
+          }}
+        />
+        <Input
+          inputType="number"
+          title="Price"
+          placeholder="NFT price"
+          onChange={(event) => {
+            setFormInput((current) => {
+              return {
+                ...current,
+                // @ts-ignore
+                price: event.target.value,
+              };
+            });
+          }}
+        />
+
+        <div className="mt-7 w-full flex justify-end">
+          <Button className="rounded-xl" onClick={() => {}}>
+            Create NFT
+          </Button>
         </div>
       </div>
     </div>
