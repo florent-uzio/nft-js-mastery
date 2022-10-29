@@ -7,12 +7,30 @@ import { Banner, CreatorCard, NFTCard } from '../components';
 import { makeId } from '../utils';
 
 type Direction = 'left' | 'right';
+type EthAddresses = {
+  creatorName: string;
+  owner: string;
+  seller: string;
+};
 
 const Home: NextPage = () => {
   const [hideButtons, setHideButtons] = useState(false);
   const parentRef = useRef(null);
   const scrollRef = useRef(null);
   const { theme } = useTheme();
+  const [ethAddresses, setEthAddresses] = useState<EthAddresses>({
+    creatorName: '',
+    owner: '',
+    seller: '',
+  });
+
+  useEffect(() => {
+    setEthAddresses({
+      creatorName: `0x${makeId(3)}...${makeId(4)}`,
+      owner: `0x${makeId(3)}...${makeId(4)}`,
+      seller: `0x${makeId(3)}...${makeId(4)}`,
+    });
+  }, []);
 
   const handleScroll = (direction: Direction) => {
     const { current } = scrollRef;
@@ -76,7 +94,7 @@ const Home: NextPage = () => {
                     rank={index}
                     // @ts-ignore
                     creatorImage={images[`creator${index}`]}
-                    creatorName={`0x${makeId(3)}...${makeId(4)}`}
+                    creatorName={ethAddresses?.creatorName}
                     creatorEths={10 - index * 0.5}
                   />
                 );
@@ -132,9 +150,9 @@ const Home: NextPage = () => {
                     image: '',
                     name: `Nifty NFT ${index}`,
                     nft,
-                    owner: `0x${makeId(3)}...${makeId(4)}`,
+                    owner: ethAddresses.owner,
                     price: (10 - nft * 0.534).toFixed(2),
-                    seller: `0x${makeId(3)}...${makeId(4)}`,
+                    seller: ethAddresses.seller,
                   }}
                 />
               );
