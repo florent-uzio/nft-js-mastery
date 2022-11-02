@@ -57,6 +57,7 @@ contract NFTMarketplace is ERC721URIStorage {
         return listingPrice;
     }
 
+    // To mint a token, transforms an image into an NFT
     function createToken(string memory tokenURI, uint256 price) public payable returns (uint) {
         _tokenIds.increment();
 
@@ -70,6 +71,7 @@ contract NFTMarketplace is ERC721URIStorage {
         return newTokenId;
     }
 
+    // Put the NFT in the marketplace.
     function createMarketItem(uint256 tokenId, uint256 price) private {
         require(price > 0, "Price must be positive");
         require(msg.value == listingPrice, "Price must be equal to listing price");
@@ -85,5 +87,37 @@ contract NFTMarketplace is ERC721URIStorage {
         _transfer(msg.sender, address(this), tokenId);
 
         emit MarketItemCreated(tokenId, msg.sender, address(this), price, false);
+    }
+
+    function resellToken(uint256 tokenId, uint256 price) public payable {
+        require(idToMarketItem[tokenId].owner == msg.sender, "Only the NFT owner can sell it" );
+        require(msg.value == listingPrice, "Price must be equal to listing price");
+
+        idToMarketItem[tokenId].sold = false;
+        idToMarketItem[tokenId].price = price;
+        idToMarketItem[tokenId].seller = payable(msg.sender);
+        idToMarketItem[tokenId].owner = payable(address(this));
+
+        _itemsSold.decrement();
+
+        _transfer(msg.sender, address(this), tokenId);
+    }
+
+    // Someones wants to buy the NFT
+    function createMarkeSale(uint256 tokenId) public payable {
+        uint price = idToMarketItem[tokenId].price;
+
+        require(msg.value == price, "Please submit the asking price in order to complete the purchase.");
+
+        idToMarketItem[tokenId].owner = payable(msg.sender);
+        idToMarketItem[tokenId].sold = true;
+        idToMarketItem[tokenId].seller = payable(address(0));
+        
+        _itemsSold.increment();
+
+        _transfer(address(this), msg.sender, tokenId);
+
+        payable(owner).transfer(listingPrice);
+        payable(idToMarketItem[tokenId].seller).transfer(msg.value);
     }
 }
