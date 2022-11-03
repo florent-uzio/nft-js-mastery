@@ -88,10 +88,7 @@ export const Navbar = () => {
             activeTabChangeHandler={activeTabChangeHandler}
             isMobile={false}
           />
-          <ButtonGroup
-            activeTabChangeHandler={activeTabChangeHandler}
-            hasConnected={true}
-          />
+          <ButtonGroup activeTabChangeHandler={activeTabChangeHandler} />
         </div>
       </div>
 
