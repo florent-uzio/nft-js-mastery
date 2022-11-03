@@ -1,5 +1,6 @@
 import classNames from 'classnames';
-import { HTMLAttributes } from 'react';
+import { HTMLAttributes, useContext } from 'react';
+import { NFTContext } from '../../../context';
 
 type InputProps = {
   inputType: string;
@@ -15,6 +16,8 @@ export const Input = ({
   title,
   ...rest
 }: InputProps) => {
+  const { nftCurrency } = useContext(NFTContext);
+
   return (
     <div className="mt-10 w-full">
       <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-xl">
@@ -30,7 +33,7 @@ export const Input = ({
             {...rest}
           />
           <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-xl">
-            ETH
+            {nftCurrency}
           </p>
         </div>
       ) : inputType === 'textarea' ? (
