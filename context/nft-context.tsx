@@ -1,9 +1,11 @@
 import React, { createContext, useEffect, useState } from 'react';
+import { useIpfsClient } from '../utils';
 
 type NFTContextApi = {
   nftCurrency: string;
   connectWallet: () => void;
   currentAccount: string;
+  uploadToIPFS: (file: File) => Promise<string | undefined>;
 };
 
 export const NFTContext = createContext<NFTContextApi>({} as NFTContextApi);
@@ -14,6 +16,7 @@ type NFTProviderProps = {
 
 export const NFTProvider: React.FC<NFTProviderProps> = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState('');
+  const { client } = useIpfsClient();
   const nftCurrency = 'ETH';
 
   const checkIfWalletIsConnected = async () => {
@@ -52,8 +55,23 @@ export const NFTProvider: React.FC<NFTProviderProps> = ({ children }) => {
     window.location.reload();
   };
 
+  const uploadToIPFS = async (file: File) => {
+    try {
+      const added = await client.add({ content: file });
+
+      // const url = `https://ipfs.infura.io:5001/ipfs/${added.path}`;
+      const url = `https://ipfs.io/ipfs/${added.path}`;
+
+      return url;
+    } catch (err) {
+      console.log(`Error uploading file to IPFS: ${err}`);
+    }
+  };
+
   return (
-    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount }}>
+    <NFTContext.Provider
+      value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS }}
+    >
       {children}
     </NFTContext.Provider>
   );

@@ -1,9 +1,10 @@
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import images from '../assets';
 import { Button, Input } from '../components/shared';
+import { NFTContext } from '../context';
 
 type FormInput = {
   price: string;
@@ -13,13 +14,19 @@ type FormInput = {
 
 const CreateNFT = () => {
   const { theme } = useTheme();
-  const [fileUrl, setFileUrl] = useState(null);
-  const [formInput, setFormInput] = useState<FormInput>({
+  const [fileUrl, setFileUrl] = useState<string>();
+  const [, setFormInput] = useState<FormInput>({
     price: '',
     name: '',
     description: '',
   });
-  const onDrop = useCallback(() => {}, []);
+
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    const url = await uploadToIPFS(acceptedFiles[0]);
+
+    setFileUrl(url);
+  }, []);
+
   const {
     getRootProps,
     getInputProps,
@@ -31,6 +38,7 @@ const CreateNFT = () => {
     accept: { 'image/*': ['.png', '.gif', '.jpeg', '.jpg'] },
     maxSize: 5000000,
   });
+  const { uploadToIPFS } = useContext(NFTContext);
 
   const fileStyle = useMemo(() => {
     return `dark:bg-nft-black-1 bg-white border dark:border-white border-nft-gray-2 flex flex-col items-center p-5 rounded-sm border-dashed
@@ -54,7 +62,7 @@ const CreateNFT = () => {
               <input {...getInputProps()} />
               <div className="flexCenter flex-col text-center">
                 <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-xl">
-                  JPG, PNG, GIF, JPEG. Max 100mb.
+                  JPG, PNG, GIF, JPEG. Max 5mb.
                 </p>
 
                 <div className="my-12 min-w-full flex justify-center">
